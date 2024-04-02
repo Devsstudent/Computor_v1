@@ -6,6 +6,18 @@
 #include <string.h>
 #include <ctype.h>
 
+float ft_sqrt_float(float nb) {
+    float guess = nb / 2.0; // Initial guess, can be any positive value
+    float prevGuess; // Variable to store the previous guess
+    
+    // Iterate until convergence
+    do {
+        prevGuess = guess;
+        guess = (guess + nb / guess) / 2.0; // Update the guess using Newton's method
+    } while (prevGuess != guess); // Continue until the guess no longer changes
+    
+    return guess;
+}
 float	one_solu(t_equation eq)
 {
 	return ((-eq.first_deg)/(2*eq.second_deg));
@@ -15,7 +27,7 @@ float	first_solu(t_equation eq, float res)
 {
 	float	a;
 
-	a = (-eq.first_deg + sqrtf(res));
+	a = (-eq.first_deg + ft_sqrt_float(res));
 	if (a == 0)
 		return (0);
 	float	b;
@@ -27,7 +39,7 @@ float second_solu(t_equation eq, float res)
 {
 	float	a;
 
-	a = (-eq.first_deg - sqrtf(res));
+	a = (-eq.first_deg - ft_sqrt_float(res));
 	if (a == 0)
 		return (0);
 	float	b;
@@ -64,7 +76,7 @@ bool check_pattern(char *equation, int *idx, int *degree)
 	if (equation[*idx] && !isspace(equation[*idx]))
 		return (false);
 	(*idx)++;
-	if (equation[*idx] && equation[*idx] != 'X' || (equation[*idx + 1] && equation[*idx + 1] != '^') || (equation[*idx + 2] && !isdigit(equation[*idx + 2]) || equation[*idx + 3] && isdigit(equation[*idx + 3])))
+	if ((equation[*idx] && equation[*idx] != 'X') || (equation[*idx + 1] && equation[*idx + 1] != '^') || ((equation[*idx + 2] && !isdigit(equation[*idx + 2])) || (equation[*idx + 3] && isdigit(equation[*idx + 3]))))
 		return (false);
 	(*idx) = (*idx) + 2;
 	*degree = atoi(&equation[*idx]);
@@ -81,7 +93,7 @@ bool fill_equation(t_equation *eq, char *equation)
 	int value = 0;
 	int degree = -1;
 	int type = 1;
-	bool equation_operator = false;
+	//bool equation_operator = false;
 
 	//printf("%s\n", equation);
 	while (equation && equation[i] && equation[i] != '='){
@@ -130,8 +142,7 @@ bool fill_equation(t_equation *eq, char *equation)
 		}
 		if (equation[i] == '+')
 			type = 1;
-		else if (equation[i] == '-')
-			type = 2;
+		else if (equation[i] == '-') type = 2;
 		i++;
 	}
 	return (true);
